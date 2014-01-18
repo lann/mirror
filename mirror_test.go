@@ -31,9 +31,9 @@ func TestConvertType(t *testing.T) {
 
 func TestForEach(t *testing.T) {
 	ints := []int{1, 2, 3}
-	out := []int{}
-	ForEach(ints, func(i interface{}) {
-		out = append(out, i.(int))
+	out := []int{0, 0, 0}
+	ForEach(ints, func(i int, v interface{}) {
+		out[i] = v.(int)
 	})
 	if !reflect.DeepEqual(out, ints) {
 		t.Errorf("expected %v, got %v", ints, out)
@@ -44,7 +44,7 @@ func TestForEachValue(t *testing.T) {
 	ints := []int{0, 0}
 	expected := []int{1, 1}
 	oneVal := reflect.ValueOf(1)
-	ForEachValue(ints, func(val reflect.Value) {
+	ForEachValue(ints, func(_ int, val reflect.Value) {
 		val.Set(oneVal)
 	})
 	if !reflect.DeepEqual(ints, expected) {
@@ -56,7 +56,7 @@ func TestForEachValuePanic(t *testing.T) {
 	var panicVal *reflect.ValueError
 	func() {
 		defer func() { panicVal = recover().(*reflect.ValueError) }()
-		ForEachValue(X{}, func(_ reflect.Value) {})
+		ForEachValue(X{}, func(_ int, _ reflect.Value) {})
 	}()
 	if panicVal == nil {
 		t.Errorf("expected panic, didn't")

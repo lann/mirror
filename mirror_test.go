@@ -44,7 +44,7 @@ func TestForEachValue(t *testing.T) {
 	ints := []int{0, 0}
 	expected := []int{1, 1}
 	oneVal := reflect.ValueOf(1)
-	ForEachValue(ints, func(_ int, val reflect.Value) {
+	ForEachValue(reflect.ValueOf(ints), func(_ int, val reflect.Value) {
 		val.Set(oneVal)
 	})
 	if !reflect.DeepEqual(ints, expected) {
@@ -56,7 +56,7 @@ func TestForEachValuePanic(t *testing.T) {
 	var panicVal *reflect.ValueError
 	func() {
 		defer func() { panicVal = recover().(*reflect.ValueError) }()
-		ForEachValue(X{}, func(_ int, _ reflect.Value) {})
+		ForEachValue(reflect.ValueOf(X{}), func(_ int, _ reflect.Value) {})
 	}()
 	if panicVal == nil {
 		t.Errorf("expected panic, didn't")

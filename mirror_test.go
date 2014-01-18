@@ -40,6 +40,22 @@ func TestForEach(t *testing.T) {
 	}
 }
 
+func TestIsArrayOrSlice(t *testing.T) {
+	test := func(expect bool, v interface{}) {
+		if IsArrayOrSlice(v) != expect {
+			t.Errorf("expected IsArrayOrSlice(%T) == %v", v, expect)
+		}
+	}
+
+	test(true, []interface{}{})
+	test(true, []int{})
+	test(true, reflect.ValueOf([]int{}))
+	test(true, reflect.Array)
+	test(false, 1)
+	test(false, reflect.ValueOf(1))
+	test(false, reflect.Map)
+}
+
 func TestForEachValue(t *testing.T) {
 	ints := []int{0, 0}
 	expected := []int{1, 1}
